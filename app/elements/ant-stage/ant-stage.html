@@ -1,0 +1,40 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="ant-stage" attributes="redirectUrl responseType clientID clientSecret">
+  <template>
+    <link rel="stylesheet" href="ant-stage.css">
+    <h1>oAuth example</h1>
+    <template if="{{!status}}">
+    <a href="https://services.antwerpen.be/authorize?redirect_uri={{ReUrl}}&scope=&response_type={{responseType}}&client_id={{clientID}}">> Aanmelden met A-profiel</a>
+    </template>
+    <template if="{{status}}">
+    <core-ajax url="https://services.antwerpen.be/api/user/0.0.1/me" auto headers='{"Authorization": "Bearer  {{code}}"}' on-core-response="{{handleResponse}}" response="{{response}}"></core-ajax>
+    <h3>{{response}}</h3>
+
+    </template>
+
+  </template>
+  <script>
+    (function () {
+
+    function getHash(){
+      var hash = window.location.hash.substring(14, 46);
+      return hash;
+    }
+
+      Polymer({
+        // define element prototype here
+        ready: function(){
+          this.code = getHash();
+          if(this.code!=''){
+            this.status = true;
+          };
+          this.ReUrl = encodeURIComponent(this.redirectUrl);
+        }
+        
+      });
+
+    })();
+  </script>
+</polymer-element>
